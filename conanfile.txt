@@ -15,6 +15,6 @@ CMakeToolchain
 cmake_layout
 
 [options]
-opencv:shared=False
-zxing-cpp:shared=False
-tflite:shared=False
+opencv/*:shared=False
+zxing-cpp/*:shared=False
+tflite/*:shared=False
