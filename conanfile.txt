@@ -1,7 +1,7 @@
 [requires]
 opencv/4.9.0
 zxing-cpp/2.1.0
-tflite/2.14.0
+tensorflow-lite/2.15.0
 
 [tool_requires]
 cmake/3.28.3

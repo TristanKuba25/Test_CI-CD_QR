@@ -7,12 +7,12 @@ include(GNUInstallDirs)
 
 find_package(OpenCV     REQUIRED COMPONENTS core imgproc highgui)
 find_package(zxing-cpp  REQUIRED CONFIG)
-find_package(tflite     REQUIRED CONFIG)
+find_package(tensorflowlite     REQUIRED CONFIG)
 
 file(GLOB SRC CONFIGURE_DEPENDS src/*.cpp)
 add_executable(${PROJECT_NAME} ${SRC})
 target_link_libraries(${PROJECT_NAME}
-        PRIVATE OpenCV::OpenCV ZXing::ZXing tflite::tflite dl pthread)
+        PRIVATE OpenCV::OpenCV ZXing::ZXing tensorflow::tensorflowlite dl pthread)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 install(DIRECTORY models/ DESTINATION ${CMAKE_INSTALL_DATADIR}/${PROJECT_NAME}/models)
