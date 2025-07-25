@@ -44,6 +44,7 @@ jobs:
         conan install . \
               --profile:build=default \
               --profile:host=profiles/imx8mpevk \
+              -s:h compiler.cppstd=17 \
               --build=missing \
               --output-folder=build
 
