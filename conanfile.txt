@@ -18,3 +18,4 @@ cmake_layout
 opencv/*:shared=False
 zxing-cpp/*:shared=False
 tflite/*:shared=False
+opencv/*:with_vaapi=False
