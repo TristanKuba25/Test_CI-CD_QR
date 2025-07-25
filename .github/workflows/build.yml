@@ -6,29 +6,23 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-22.04
 
     steps:
- 
     - uses: actions/checkout@v4
 
-
-    - name: Install cross‑compiler & Conan
+    - name: Install cross-compiler & Conan
       run: |
-        sudo add-apt-repository ppa:ubuntu-toolchain-r/test -y
         sudo apt-get update
-        # tente GCC 13 ; si indisponible, on prendra la version par défaut
-        sudo apt-get install -y gcc-13-aarch64-linux-gnu g++-13-aarch64-linux-gnu || true
-        sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu ninja-build cmake
+        sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu \
+                                ninja-build cmake python3-pip
         python3 -m pip install --upgrade "conan~=2.2"
-
 
     - uses: actions/cache@v3
       with:
         path: ~/.conan2
-        key:  ${{ runner.os }}-conan-${{ hashFiles('conanfile.txt', 'profiles/imx8mpevk') }}
+        key:  ${{ runner.os }}-conan-${{ hashFiles('conanfile.txt', 'profiles/imx8mpevk') }}}
         restore-keys: ${{ runner.os }}-conan-
-
 
     - name: Prepare build folder & toolchain file
       run: |
@@ -36,18 +30,14 @@ jobs:
         cat > build/imx8mpevk_toolchain.cmake <<'EOF'
         set(CMAKE_SYSTEM_NAME        Linux)
         set(CMAKE_SYSTEM_PROCESSOR   aarch64)
-
-        # GCC cross‑compiler
-        set(CMAKE_C_COMPILER   /usr/bin/aarch64-linux-gnu-gcc)
-        set(CMAKE_CXX_COMPILER /usr/bin/aarch64-linux-gnu-g++)
-
+        set(CMAKE_C_COMPILER         /usr/bin/aarch64-linux-gnu-gcc)
+        set(CMAKE_CXX_COMPILER       /usr/bin/aarch64-linux-gnu-g++)
         set(CMAKE_FIND_ROOT_PATH_MODE_PROGRAM NEVER)
         foreach(mode LIBRARY INCLUDE PACKAGE)
           set(CMAKE_FIND_ROOT_PATH_MODE_${mode} ONLY)
         endforeach()
         EOF
 
- 
     - name: Conan install (cross)
       run: |
         conan profile detect --force
@@ -57,22 +47,19 @@ jobs:
               --build=missing \
               --output-folder=build
 
-  
     - name: Configure
       run: |
-        cmake -B build \
-              -G Ninja \
+        cmake -B build -G Ninja \
               -DCMAKE_TOOLCHAIN_FILE=$PWD/build/imx8mpevk_toolchain.cmake \
               -DCMAKE_BUILD_TYPE=Release
 
     - name: Build
       run: cmake --build build -j $(nproc)
 
-    
     - name: Package (.deb)
       run: cmake --build build --target package
 
     - uses: actions/upload-artifact@v4
       with:
-        name: imx8-qr-demo_deb
+        name: test-ci-cd-qr_deb
         path: build/*.deb
