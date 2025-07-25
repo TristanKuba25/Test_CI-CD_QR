@@ -1,8 +1,8 @@
 name: build
 
 on:
-  push:        { branches: ["**"] }
-  pull_request:{ branches: ["**"] }
+  push:        { branches: [main] }
+  pull_request:
 
 jobs:
   build:
@@ -68,6 +68,7 @@ jobs:
     - name: Build
       run: cmake --build build -j $(nproc)
 
+    
     - name: Package (.deb)
       run: cmake --build build --target package
 
