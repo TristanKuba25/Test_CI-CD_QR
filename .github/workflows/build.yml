@@ -45,6 +45,9 @@ jobs:
               --profile:build=default \
               --profile:host=profiles/imx8mpevk \
               -s:h compiler.cppstd=17 \
+              -c tools.system.package_manager:mode=install \
+              -c tools.system.package_manager:sudo=True \
+              -c tools.system.package_manager:arch_names='{"armv8":"arm64"}' \
               --build=missing \
               --output-folder=build
 
